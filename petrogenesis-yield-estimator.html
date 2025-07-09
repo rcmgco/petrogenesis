@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetroGenesis DAO Yield Estimator</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Use the Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the range slider thumb */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #10b981; /* green-500 */
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -6px; /* Center thumb on the track */
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- --- Left Panel: Info & Financials --- -->
+                <div class="lg:col-span-1 space-y-8">
+                    <div class="text-center lg:text-left">
+                        <img src="https://raw.githubusercontent.com/rcmgco/petrogenesis/refs/heads/main/petrogenesis%20dao%20logo%202023%20white%20copy.png" alt="PetroGenesis Logo" class="w-80 h-auto mx-auto lg:mx-0">
+                    </div>
+                    <div class="flex justify-center lg:justify-start space-x-2 sm:space-x-4">
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Website" class="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"><i data-lucide="globe" class="w-5 h-5"></i></a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="X/Twitter" class="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"><i data-lucide="send" class="w-5 h-5"></i></a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Reddit" class="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                <path d="M12 18C14.2091 18 16 16.2091 16 14H8C8 16.2091 9.79086 18 12 18Z" />
+                                <line x1="9" y1="12" x2="9.01" y2="12" />
+                                <line x1="15" y1="12" x2="15.01" y2="12" />
+                            </svg>
+                        </a>
+                        <a href="mailto:support@xrbdao.com" class="p-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"><i data-lucide="mail" class="w-5 h-5"></i></a>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h3 class="font-bold text-lg text-white mb-2">About The Project</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            PetroGenesis is a DAO designed to democratize access to the lucrative oil and mining sector. We collectively fund the purchase of real-world assets, like an oil rig, and distribute the profits directly to PGD token holders who stake their tokens in our ecosystem.
+                        </p>
+                        <div class="text-xs border-t border-gray-700 pt-4">
+                            <h4 class="font-semibold text-white mb-2">Use of Funds ($12M Raise):</h4>
+                            <div class="flex justify-between"><span>Asset Acquisition (Rig):</span> <span class="font-bold text-white">$10,000,000</span></div>
+                            <div class="flex justify-between"><span>Deployment & Ops Treasury:</span> <span class="font-bold text-white">$1,500,000</span></div>
+                            <div class="flex justify-between"><span>Seed Development Fund:</span> <span class="font-bold text-white">$500,000</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h3 class="font-bold text-lg text-white mb-2">Revenue Waterfall</h3>
+                        <p class="text-xs text-gray-400 mb-4">This shows how the gross monthly revenue from the rig lease is allocated to cover operational costs, with the remainder becoming gross profit for the DAO and its stakers.</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <p class="text-gray-400">Gross Monthly Revenue</p>
+                                <div class="flex items-center bg-gray-700/50 rounded border border-gray-600">
+                                    <span class="text-gray-400 pl-2">$</span>
+                                    <input type="text" id="lease-revenue-input" class="bg-transparent p-1 w-24 text-right font-semibold text-white outline-none">
+                                </div>
+                            </div>
+                            <div class="border-t border-dashed border-gray-600 my-2"></div>
+                            <div id="waterfall-operator-fee" class="flex justify-between items-center text-sm"></div>
+                            <div id="waterfall-maintenance-fee" class="flex justify-between items-center text-sm"></div>
+                            <div id="waterfall-admin-fee" class="flex justify-between items-center text-sm"></div>
+                            <div class="border-t border-solid border-gray-600 my-2"></div>
+                            <div id="waterfall-net-revenue" class="flex justify-between items-center text-sm"></div>
+                            <div id="waterfall-conversion-fee" class="flex justify-between items-center text-sm"></div>
+                            <div class="border-t border-solid border-green-600 my-2"></div>
+                            <div id="waterfall-total-profit" class="flex justify-between items-center text-sm"></div>
+                            <div class="border-t border-dashed border-gray-600 my-2"></div>
+                            <div id="waterfall-stakers-profit" class="flex justify-between items-center text-sm"></div>
+                            <div id="waterfall-dao-profit" class="flex justify-between items-center text-sm"></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h3 class="font-bold text-lg text-white mb-2">Value Backing (NAV)</h3>
+                        <p class="text-xs text-gray-400 mb-4">Your stake is backed by the rig's value. This is your share of the rig's estimated value after a 20% depreciation over 60 months.</p>
+                        <div id="metric-rig-nav"></div>
+                        <div id="metric-user-nav" class="mt-4"></div>
+                    </div>
+                </div>
+
+                <!-- --- Right Panel: Simulator & Results --- -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h2 class="text-3xl font-bold text-white mb-2">Yield Estimator</h2>
+                        <p class="text-gray-400 mb-8">Adjust your contribution amount to see your potential stake and earnings from the project.</p>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label for="contribution-input" class="block mb-2 font-semibold text-gray-300">Your Contribution (USDT)</label>
+                                <div class="flex items-center bg-gray-900 rounded-lg p-2 border border-gray-700">
+                                    <span class="text-xl font-bold text-gray-500 mx-2">$</span>
+                                    <input type="text" id="contribution-input" class="w-full bg-transparent text-xl font-semibold text-white outline-none">
+                                </div>
+                                <input type="range" id="contribution-slider" min="0" max="12000000" step="10000" class="w-full h-2 mt-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                    <span>$0</span><span>$2M</span><span>$4M</span><span>$6M</span><span>$8M</span><span>$10M</span><span>$12M</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h3 class="font-bold text-lg text-white mb-2">Your Simulated Results</h3>
+                        <p class="text-xs text-gray-400 mb-4">Based on your contribution in the estimator above, this is your projected stake in the project and your potential returns.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div id="metric-pgd-tokens"></div>
+                            <div id="metric-share-supply"></div>
+                        </div>
+                        <h3 class="font-bold text-lg text-white mb-2 mt-6">Estimated Earnings Breakdown</h3>
+                        <p class="text-xs text-gray-400 mb-4">This shows your potential earnings over different time periods based on your stake in the project.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            <div id="metric-daily-earnings"></div>
+                            <div id="metric-weekly-earnings"></div>
+                            <div id="metric-monthly-earnings"></div>
+                            <div id="metric-quarterly-earnings"></div>
+                            <div id="metric-annual-earnings"></div>
+                            <div id="metric-60-month-earnings"></div>
+                        </div>
+                        <h3 class="font-bold text-lg text-white mb-2 mt-6">Projected Returns</h3>
+                        <p class="text-xs text-gray-400 mb-4">APY shows the annualized yield from profits. ROI includes your share of the DAO's total Net Asset Value after 60 months, assuming liquidation.</p>
+                        <div class="space-y-4">
+                           <div id="metric-apy"></div>
+                           <div id="metric-roi"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="text-center mt-8 pt-8 border-t border-gray-700">
+                <div class="text-xs text-gray-500 max-w-3xl mx-auto space-y-2">
+                    <p><strong>Disclaimer:</strong> This page and the calculations herein are for illustrative and informational purposes only and do not constitute an offer to sell, a solicitation of an offer to buy, or a recommendation of any security or any other product or service. The PGD token is a utility token and does not represent equity or shares. All financial projections are based on a set of assumptions and are not guaranteed. Actual returns may vary.</p>
+                    <p>Investing in cryptocurrencies and participating in DeFi projects involves significant risk, including the risk of total loss. Please conduct your own research and consult with a financial advisor before making any investment decisions.</p>
+                    <p class="pt-4 font-semibold">© PetroGenesis DAO, an XRB DAO project. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- STATE MANAGEMENT ---
+            // Replaces React's useState. These are the core input values.
+            let state = {
+                contribution: 50000,
+                leaseRevenue: 750000
+            };
+
+            // --- CONSTANTS ---
+            // Financial constants for the calculations.
+            const TOKEN_PRICE = 1.00;
+            const TOTAL_TOKEN_SUPPLY = 15000000;
+            const RIG_VALUE = 10000000;
+            const TOTAL_STAKED_TOKENS = 12000000;
+            const INITIAL_OPERATIONAL_TREASURY = 1500000;
+            const SEED_FUND = 500000;
+            const MAX_CONTRIBUTION = 12000000;
+            const MAX_REVENUE = 1500000;
+
+            // --- DOM ELEMENT REFERENCES ---
+            // Get references to all the elements we need to update or read from.
+            const contributionInput = document.getElementById('contribution-input');
+            const contributionSlider = document.getElementById('contribution-slider');
+            const leaseRevenueInput = document.getElementById('lease-revenue-input');
+
+            // --- HELPER FUNCTIONS ---
+            const formatCurrency = (value, minDigits = 2, maxDigits = 2) => `$${value.toLocaleString('en-US', {minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits})}`;
+            const formatPercent = (value) => `${value.toFixed(4)}%`;
+            const formatNumber = (value) => value.toLocaleString('en-US', {maximumFractionDigits: 0});
+
+            // --- COMPONENT-LIKE RENDER FUNCTIONS ---
+            // These functions build the inner HTML for complex elements, similar to React components.
+            
+            const createMetricCard = (title, value, iconName, isPrimary = false) => {
+                const primaryClasses = 'bg-green-900/50 border-green-500/30';
+                const defaultClasses = 'bg-gray-900/70 border-gray-700';
+                const primaryIconBg = 'bg-green-800';
+                const defaultIconBg = 'bg-gray-700';
+                const primaryText = 'text-3xl text-green-400';
+                const defaultText = 'text-xl text-white';
+
+                return `
+                    <div class="p-4 rounded-lg flex items-center gap-4 border ${isPrimary ? primaryClasses : defaultClasses}">
+                        <div class="p-3 rounded-lg ${isPrimary ? primaryIconBg : defaultIconBg}">
+                            <i data-lucide="${iconName}" class="w-5 h-5 ${isPrimary ? 'text-green-400' : 'text-blue-400'}"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">${title}</p>
+                            <p class="font-bold ${isPrimary ? primaryText : defaultText}">${value}</p>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const createWaterfallStep = (label, value, percentage = '', isFinal = false, isDeduction = false) => {
+                const valueClass = isFinal ? 'text-green-400' : 'text-white';
+                const sign = isDeduction ? '-' : '';
+                return `
+                    <p class="text-gray-400">${label} <span class="text-xs text-gray-500">${percentage}</span></p>
+                    <p class="font-semibold ${valueClass}">${sign}${formatCurrency(value)}</p>
+                `;
+            };
+
+            // --- CALCULATION LOGIC ---
+            // This function performs all financial calculations based on the current state.
+            const calculateMetrics = () => {
+                const { contribution, leaseRevenue } = state;
+
+                const operatorFee = leaseRevenue * 0.20;
+                const maintenanceFee = leaseRevenue * 0.15;
+                const tcmaAdminFee = leaseRevenue * 0.02;
+                const netRevenue = leaseRevenue - operatorFee - maintenanceFee - tcmaAdminFee;
+                const conversionFee = netRevenue > 0 ? netRevenue * 0.05 : 0;
+                const totalGrossProfit = netRevenue > 0 ? netRevenue - conversionFee : 0;
+                
+                const grossProfitForStakers = totalGrossProfit * 0.70;
+                const grossProfitForDAO = totalGrossProfit * 0.30;
+                
+                const dailyProfitPool = grossProfitForStakers / 30.4375;
+
+                const pgdTokens = contribution / TOKEN_PRICE;
+                const shareOfTotalSupply = (pgdTokens / TOTAL_TOKEN_SUPPLY) * 100;
+                const annualEarnings = (pgdTokens / TOTAL_STAKED_TOKENS) * (dailyProfitPool * 365);
+                const apy = contribution > 0 ? (annualEarnings / contribution) * 100 : 0;
+                
+                const dailyEarnings = annualEarnings / 365;
+                const weeklyEarnings = dailyEarnings * 7;
+                const monthlyEarnings = dailyEarnings * 30.4375;
+                const quarterlyEarnings = monthlyEarnings * 3;
+                const sixtyMonthEarnings = annualEarnings * 5;
+
+                const depreciatedRigValue = RIG_VALUE * 0.80;
+                const finalDaoTreasuryValue = INITIAL_OPERATIONAL_TREASURY + SEED_FUND + (grossProfitForDAO * 60);
+                const finalDaoNav = depreciatedRigValue + finalDaoTreasuryValue;
+                const userNavShare = (pgdTokens / TOTAL_TOKEN_SUPPLY) * finalDaoNav;
+                
+                const totalReturnForStakers = sixtyMonthEarnings + userNavShare;
+                const totalRoi = contribution > 0 ? ((totalReturnForStakers - contribution) / contribution) * 100 : 0;
+
+                return { 
+                    pgdTokens, shareOfTotalSupply, dailyEarnings, weeklyEarnings, monthlyEarnings, quarterlyEarnings, annualEarnings, sixtyMonthEarnings, apy, depreciatedRigValue, userNavShare,
+                    leaseRevenue, operatorFee, maintenanceFee, tcmaAdminFee, netRevenue, conversionFee, totalGrossProfit, grossProfitForStakers, grossProfitForDAO, totalRoi
+                };
+            };
+
+            // --- RENDER FUNCTION ---
+            // This function takes the calculated metrics and updates the DOM.
+            const render = () => {
+                const metrics = calculateMetrics();
+
+                // Update input fields with formatted values
+                contributionInput.value = metrics.pgdTokens.toLocaleString('en-US');
+                contributionSlider.value = state.contribution;
+                leaseRevenueInput.value = state.leaseRevenue.toLocaleString('en-US');
+
+                // Update metric cards
+                document.getElementById('metric-pgd-tokens').innerHTML = createMetricCard('PGD Tokens', formatNumber(metrics.pgdTokens), 'briefcase');
+                document.getElementById('metric-share-supply').innerHTML = createMetricCard('Share of Total Supply', formatPercent(metrics.shareOfTotalSupply), 'bar-chart');
+                document.getElementById('metric-daily-earnings').innerHTML = createMetricCard('Daily', formatCurrency(metrics.dailyEarnings), 'calendar-days');
+                document.getElementById('metric-weekly-earnings').innerHTML = createMetricCard('Weekly', formatCurrency(metrics.weeklyEarnings), 'calendar-range');
+                document.getElementById('metric-monthly-earnings').innerHTML = createMetricCard('Monthly', formatCurrency(metrics.monthlyEarnings), 'calendar');
+                document.getElementById('metric-quarterly-earnings').innerHTML = createMetricCard('Quarterly', formatCurrency(metrics.quarterlyEarnings), 'calendar-clock');
+                document.getElementById('metric-annual-earnings').innerHTML = createMetricCard('Annually', formatCurrency(metrics.annualEarnings), 'wallet');
+                document.getElementById('metric-60-month-earnings').innerHTML = createMetricCard('60-Month Total', formatCurrency(metrics.sixtyMonthEarnings), 'wallet');
+                document.getElementById('metric-rig-nav').innerHTML = createMetricCard('Rig Net Asset Value', formatCurrency(metrics.depreciatedRigValue, 0, 0), 'anchor');
+                document.getElementById('metric-user-nav').innerHTML = createMetricCard('Your Share of NAV', formatCurrency(metrics.userNavShare, 0, 0), 'shield');
+                document.getElementById('metric-apy').innerHTML = createMetricCard('Estimated APY', `${metrics.apy.toFixed(2)}%`, 'trending-up', true);
+                document.getElementById('metric-roi').innerHTML = createMetricCard('Total 60-Month ROI (at Liquidation)', `${metrics.totalRoi.toFixed(2)}%`, 'trending-up', true);
+
+                // Update waterfall
+                document.getElementById('waterfall-operator-fee').innerHTML = createWaterfallStep('Rig Operator Fee', metrics.operatorFee, `(${(metrics.operatorFee / metrics.leaseRevenue * 100).toFixed(2)}%)`, false, true);
+                document.getElementById('waterfall-maintenance-fee').innerHTML = createWaterfallStep('Maintenance/Insurance', metrics.maintenanceFee, `(${(metrics.maintenanceFee / metrics.leaseRevenue * 100).toFixed(2)}%)`, false, true);
+                document.getElementById('waterfall-admin-fee').innerHTML = createWaterfallStep('TCMA Admin Fee', metrics.tcmaAdminFee, `(${(metrics.tcmaAdminFee / metrics.leaseRevenue * 100).toFixed(2)}%)`, false, true);
+                document.getElementById('waterfall-net-revenue').innerHTML = createWaterfallStep('Net Revenue', metrics.netRevenue < 0 ? 0 : metrics.netRevenue);
+                document.getElementById('waterfall-conversion-fee').innerHTML = createWaterfallStep('TCMA On/Off-Ramp Fee', metrics.conversionFee < 0 ? 0 : metrics.conversionFee, '(5% of Net Rev)', false, true);
+                document.getElementById('waterfall-total-profit').innerHTML = createWaterfallStep('Total Gross Profit', metrics.totalGrossProfit, '', true);
+                document.getElementById('waterfall-stakers-profit').innerHTML = createWaterfallStep('Gross Profit for Stakers', metrics.grossProfitForStakers, '(70%)');
+                document.getElementById('waterfall-dao-profit').innerHTML = createWaterfallStep('Gross Profit for DAO', metrics.grossProfitForDAO, '(30%)');
+
+                // Re-render icons after updating the DOM
+                lucide.createIcons();
+            };
+
+            // --- EVENT HANDLERS ---
+            const handleContributionChange = (e) => {
+                let value = parseFloat(String(e.target.value).replace(/,/g, '')) || 0;
+                if (value > MAX_CONTRIBUTION) value = MAX_CONTRIBUTION;
+                state.contribution = value;
+                render();
+            };
+            
+            const handleLeaseRevenueChange = (e) => {
+                let value = parseFloat(String(e.target.value).replace(/,/g, '')) || 0;
+                if (value > MAX_REVENUE) value = MAX_REVENUE;
+                state.leaseRevenue = value;
+                render();
+            };
+
+            // --- EVENT LISTENERS ---
+            contributionInput.addEventListener('input', handleContributionChange);
+            contributionSlider.addEventListener('input', handleContributionChange);
+            leaseRevenueInput.addEventListener('input', handleLeaseRevenueChange);
+
+            // --- INITIALIZATION ---
+            // Perform the initial render when the page loads.
+            render();
+        });
+    </script>
+</body>
+</html>
