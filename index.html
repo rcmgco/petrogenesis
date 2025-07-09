@@ -13,8 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons & Chart.js -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* Use the Inter font family */
@@ -72,7 +73,16 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-4">
                             PetroGenesis is a DAO designed to democratize access to the lucrative oil and mining sector. We collectively fund the purchase of real-world assets, like an oil rig, and distribute the profits directly to PGD token holders who stake their tokens in our ecosystem.
                         </p>
+                        <div class="my-6">
+                            <canvas id="tokenomicsChart"></canvas>
+                        </div>
                         <div class="text-xs border-t border-gray-700 pt-4">
+                            <h4 class="font-semibold text-white mb-2">Token Distribution (15M PGD):</h4>
+                            <div class="flex justify-between"><span><span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>Contributors:</span> <span class="font-bold text-white">12,000,000</span></div>
+                            <div class="flex justify-between"><span><span class="inline-block w-2 h-2 rounded-full bg-purple-500 mr-2"></span>DAO Treasury:</span> <span class="font-bold text-white">3,000,000</span></div>
+                             <p class="text-gray-400 mt-2">The DAO Treasury allocation is for community incentives, additional rewards, and operations.</p>
+                        </div>
+                        <div class="text-xs border-t border-gray-700 pt-4 mt-6">
                             <h4 class="font-semibold text-white mb-2">Use of Funds ($12M Raise):</h4>
                             <div class="flex justify-between"><span>Asset Acquisition (Rig):</span> <span class="font-bold text-white">$10,000,000</span></div>
                             <div class="flex justify-between"><span>Deployment & Ops Treasury:</span> <span class="font-bold text-white">$1,500,000</span></div>
@@ -156,6 +166,26 @@
                            <div id="metric-roi"></div>
                         </div>
                     </div>
+                    
+                    <!-- HOW IT WORKS SECTION -->
+                    <div class="bg-gray-800/50 rounded-xl shadow-2xl border border-gray-700 p-6">
+                        <h3 class="font-bold text-lg text-white mb-2">How It Works</h3>
+                        <div class="text-sm text-gray-400 leading-relaxed space-y-4">
+                            <p>
+                                You contribute <strong class="font-semibold text-green-400">USDT</strong> and receive <strong class="font-semibold text-green-400">PGD</strong> tokens in return on the Ethereum chain. Once the presale is complete and the hard cap of $12M USDT is filled, your <strong class="font-semibold text-green-400">PGD</strong> tokens will be available to be claimed using the same wallet you used to contribute.
+                            </p>
+                            <p>
+                                After claiming, you can immediately stake your <strong class="font-semibold text-green-400">PGD</strong> on our platform. The staking dashboard allows you to manage your stake and claim profit-sharing rewards in <strong class="font-semibold text-green-400">USDT</strong> directly to your wallet, based on your share of available profits.
+                            </p>
+                            <p>
+                                When you stake, you will receive a counter-token called <strong class="font-semibold text-green-400">sPGD</strong> (staked PGD), which represents your position in the profit-sharing pool. These <strong class="font-semibold text-green-400">sPGD</strong> tokens are tradable and should be treated with care, as they are your key to the underlying stake and rewards.
+                            </p>
+                            <p>
+                                 The smart contract verifies your <strong class="font-semibold text-green-400">sPGD</strong> balance each time you connect your wallet, reflecting the amount of <strong class="font-semibold text-green-400">PGD</strong> you can unstake and the amount of <strong class="font-semibold text-green-400">USDT</strong> you can claim. This mechanism allows you to trade your staked position on secondary markets at any time.
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <footer class="text-center mt-8 pt-8 border-t border-gray-700">
@@ -171,37 +201,30 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- STATE MANAGEMENT ---
-            // Replaces React's useState. These are the core input values.
             let state = {
                 contribution: 50000,
                 leaseRevenue: 750000
             };
 
             // --- CONSTANTS ---
-            // Financial constants for the calculations.
             const TOKEN_PRICE = 1.00;
             const TOTAL_TOKEN_SUPPLY = 15000000;
             const RIG_VALUE = 10000000;
             const TOTAL_STAKED_TOKENS = 12000000;
-            const INITIAL_OPERATIONAL_TREASURY = 1500000;
-            const SEED_FUND = 500000;
             const MAX_CONTRIBUTION = 12000000;
             const MAX_REVENUE = 1500000;
 
             // --- DOM ELEMENT REFERENCES ---
-            // Get references to all the elements we need to update or read from.
             const contributionInput = document.getElementById('contribution-input');
             const contributionSlider = document.getElementById('contribution-slider');
             const leaseRevenueInput = document.getElementById('lease-revenue-input');
 
             // --- HELPER FUNCTIONS ---
-            const formatCurrency = (value, minDigits = 2, maxDigits = 2) => `$${value.toLocaleString('en-US', {minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits})}`;
+            const formatCurrency = (value, minDigits = 0, maxDigits = 0) => `$${value.toLocaleString('en-US', {minimumFractionDigits: minDigits, maximumFractionDigits: maxDigits})}`;
             const formatPercent = (value) => `${value.toFixed(4)}%`;
             const formatNumber = (value) => value.toLocaleString('en-US', {maximumFractionDigits: 0});
 
             // --- COMPONENT-LIKE RENDER FUNCTIONS ---
-            // These functions build the inner HTML for complex elements, similar to React components.
-            
             const createMetricCard = (title, value, iconName, isPrimary = false) => {
                 const primaryClasses = 'bg-green-900/50 border-green-500/30';
                 const defaultClasses = 'bg-gray-900/70 border-gray-700';
@@ -233,7 +256,6 @@
             };
 
             // --- CALCULATION LOGIC ---
-            // This function performs all financial calculations based on the current state.
             const calculateMetrics = () => {
                 const { contribution, leaseRevenue } = state;
 
@@ -260,11 +282,13 @@
                 const quarterlyEarnings = monthlyEarnings * 3;
                 const sixtyMonthEarnings = annualEarnings * 5;
 
+                // --- CORRECTED NAV & ROI Calculations ---
                 const depreciatedRigValue = RIG_VALUE * 0.80;
-                const finalDaoTreasuryValue = INITIAL_OPERATIONAL_TREASURY + SEED_FUND + (grossProfitForDAO * 60);
-                const finalDaoNav = depreciatedRigValue + finalDaoTreasuryValue;
-                const userNavShare = (pgdTokens / TOTAL_TOKEN_SUPPLY) * finalDaoNav;
                 
+                // User's share of the rig's value only.
+                const userNavShare = (pgdTokens / TOTAL_TOKEN_SUPPLY) * depreciatedRigValue;
+                
+                // Total return for ROI is now earnings + user's share of the rig value.
                 const totalReturnForStakers = sixtyMonthEarnings + userNavShare;
                 const totalRoi = contribution > 0 ? ((totalReturnForStakers - contribution) / contribution) * 100 : 0;
 
@@ -275,11 +299,10 @@
             };
 
             // --- RENDER FUNCTION ---
-            // This function takes the calculated metrics and updates the DOM.
             const render = () => {
                 const metrics = calculateMetrics();
 
-                // Update input fields with formatted values
+                // Update input fields
                 contributionInput.value = metrics.pgdTokens.toLocaleString('en-US');
                 contributionSlider.value = state.contribution;
                 leaseRevenueInput.value = state.leaseRevenue.toLocaleString('en-US');
@@ -293,8 +316,8 @@
                 document.getElementById('metric-quarterly-earnings').innerHTML = createMetricCard('Quarterly', formatCurrency(metrics.quarterlyEarnings), 'calendar-clock');
                 document.getElementById('metric-annual-earnings').innerHTML = createMetricCard('Annually', formatCurrency(metrics.annualEarnings), 'wallet');
                 document.getElementById('metric-60-month-earnings').innerHTML = createMetricCard('60-Month Total', formatCurrency(metrics.sixtyMonthEarnings), 'wallet');
-                document.getElementById('metric-rig-nav').innerHTML = createMetricCard('Rig Net Asset Value', formatCurrency(metrics.depreciatedRigValue, 0, 0), 'anchor');
-                document.getElementById('metric-user-nav').innerHTML = createMetricCard('Your Share of NAV', formatCurrency(metrics.userNavShare, 0, 0), 'shield');
+                document.getElementById('metric-rig-nav').innerHTML = createMetricCard('Rig Net Asset Value', formatCurrency(metrics.depreciatedRigValue), 'anchor');
+                document.getElementById('metric-user-nav').innerHTML = createMetricCard('Your Share of NAV', formatCurrency(metrics.userNavShare), 'shield');
                 document.getElementById('metric-apy').innerHTML = createMetricCard('Estimated APY', `${metrics.apy.toFixed(2)}%`, 'trending-up', true);
                 document.getElementById('metric-roi').innerHTML = createMetricCard('Total 60-Month ROI (at Liquidation)', `${metrics.totalRoi.toFixed(2)}%`, 'trending-up', true);
 
@@ -308,7 +331,7 @@
                 document.getElementById('waterfall-stakers-profit').innerHTML = createWaterfallStep('Gross Profit for Stakers', metrics.grossProfitForStakers, '(70%)');
                 document.getElementById('waterfall-dao-profit').innerHTML = createWaterfallStep('Gross Profit for DAO', metrics.grossProfitForDAO, '(30%)');
 
-                // Re-render icons after updating the DOM
+                // Re-render icons
                 lucide.createIcons();
             };
 
@@ -332,8 +355,49 @@
             contributionSlider.addEventListener('input', handleContributionChange);
             leaseRevenueInput.addEventListener('input', handleLeaseRevenueChange);
 
+            // --- CHART INITIALIZATION ---
+            const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Contributors', 'DAO Treasury'],
+                    datasets: [{
+                        label: 'PGD Token Distribution',
+                        data: [12000000, 3000000],
+                        backgroundColor: [
+                            '#10B981', // green-500
+                            '#8B5CF6'  // purple-500
+                        ],
+                        borderColor: '#4B5563', // gray-600
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Hiding the default legend to use our custom one
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('en-US').format(context.parsed) + ' PGD';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+
             // --- INITIALIZATION ---
-            // Perform the initial render when the page loads.
             render();
         });
     </script>
